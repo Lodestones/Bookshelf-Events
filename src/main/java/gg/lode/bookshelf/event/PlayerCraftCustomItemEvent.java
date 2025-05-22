@@ -19,7 +19,6 @@ public class PlayerCraftCustomItemEvent extends BaseEvent {
     private final CustomItem customItem;
 
     public PlayerCraftCustomItemEvent(@NotNull Player player, CustomItem customItem, @NotNull ItemStack result) {
-        super(true);
         this.customItem = customItem;
         this.player = player;
         this.result = result;
