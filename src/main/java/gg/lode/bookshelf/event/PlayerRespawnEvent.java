@@ -3,44 +3,27 @@ package gg.lode.bookshelf.event;
 import gg.lode.bookshelfapi.api.event.BaseEvent;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-/**
- * Event called when a player respawns.
- * This event allows for customization of the respawn location and behavior.
- *
- * @author John Aquino
- */
 public class PlayerRespawnEvent extends BaseEvent {
-    private final Player player;
-    private Location location;
-    private boolean cancelled;
 
-    public PlayerRespawnEvent(@NotNull Player player, @NotNull Location location) {
-        super(true);
+    private final Player player;
+    @Nullable
+    private Location respawnLocation;
+
+    public PlayerRespawnEvent(Player player) {
         this.player = player;
-        this.location = location;
     }
 
-    @NotNull
     public Player getPlayer() {
         return player;
     }
 
-    @NotNull
-    public Location getLocation() {
-        return location;
+    public @Nullable Location getRespawnLocation() {
+        return respawnLocation;
     }
 
-    public void setLocation(@NotNull Location location) {
-        this.location = location;
+    public void setRespawnLocation(@Nullable Location respawnLocation) {
+        this.respawnLocation = respawnLocation;
     }
-
-    public boolean isCancelled() {
-        return cancelled;
-    }
-
-    public void setCancelled(boolean cancelled) {
-        this.cancelled = cancelled;
-    }
-} 
+}
