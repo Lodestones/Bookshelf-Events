@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,7 +24,7 @@ public class PlayerChatEvent extends BaseEvent {
     private String messageColor;
     private String playerColor;
     private String permission;
-    private final Set<UUID> viewers;
+    private List<UUID> viewers;
     private boolean cancelled;
     private boolean modified;
 
@@ -32,7 +32,7 @@ public class PlayerChatEvent extends BaseEvent {
         super(true);
         this.player = player;
         this.message = message;
-        this.viewers = new HashSet<>();
+        this.viewers = new ArrayList<>();
         this.messageColor = "#FFFFFF";
         this.playerColor = "#FFFFFF";
         this.modified = false;
@@ -56,6 +56,15 @@ public class PlayerChatEvent extends BaseEvent {
     @Nullable
     public Component prefix() {
         return prefix;
+    }
+
+    public void setModified(boolean modified) {
+        this.modified = modified;
+    }
+
+    @NotNull
+    public List<UUID> getViewers() {
+        return viewers;
     }
 
     public void prefix(@Nullable Component prefix) {
@@ -102,9 +111,8 @@ public class PlayerChatEvent extends BaseEvent {
         this.permission = permission;
     }
 
-    @NotNull
-    public Set<UUID> getViewers() {
-        return viewers;
+    public void setViewers(List<UUID> viewers) {
+        this.viewers = viewers;
     }
 
     public boolean isCancelled() {
