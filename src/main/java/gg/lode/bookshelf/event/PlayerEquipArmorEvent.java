@@ -11,15 +11,11 @@ public class PlayerEquipArmorEvent extends BaseEvent implements Cancellable {
     private boolean isCancelled = false;
     private final Player player;
     private final EquipmentSlot slot;
-    private ItemStack itemStack;
+    private final ItemStack itemStack;
 
     public PlayerEquipArmorEvent(Player player, ItemStack itemStack, EquipmentSlot slot) {
         this.player = player;
         this.slot = slot;
-        this.itemStack = itemStack;
-    }
-
-    public void setItemStack(ItemStack itemStack) {
         this.itemStack = itemStack;
     }
 
