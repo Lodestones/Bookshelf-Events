@@ -5,8 +5,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +20,7 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
     private String permission;
     private String playerColor;
     private String messageColor;
-    private List<UUID> viewers;
+    private @Nullable List<UUID> viewers;
     private boolean isModified;
 
     public PlayerChatEvent(Player player, Component prefix, Component suffix, Component message, String permission) {
@@ -32,7 +32,7 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
         this.permission = permission;
         this.playerColor = NamedTextColor.GRAY.asHexString();
         this.messageColor = NamedTextColor.GRAY.asHexString();
-        this.viewers = new ArrayList<>();
+        this.viewers = null;
     }
 
     public PlayerChatEvent(Player player, Component prefix, Component suffix, Component message) {
@@ -44,7 +44,7 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
         this.isModified = false;
         this.playerColor = NamedTextColor.GRAY.asHexString();
         this.messageColor = NamedTextColor.GRAY.asHexString();
-        this.viewers = new ArrayList<>();
+        this.viewers = null;
     }
 
     public PlayerChatEvent(Player player, Component prefix, Component message) {
@@ -55,7 +55,7 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
         this.permission = null;
         this.playerColor = NamedTextColor.GRAY.asHexString();
         this.messageColor = NamedTextColor.GRAY.asHexString();
-        this.viewers = new ArrayList<>();
+        this.viewers = null;
         this.isModified = false;
     }
 
@@ -67,7 +67,7 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
         this.permission = null;
         this.playerColor = NamedTextColor.GRAY.asHexString();
         this.messageColor = NamedTextColor.GRAY.asHexString();
-        this.viewers = new ArrayList<>();
+        this.viewers = null;
         this.isModified = false;
     }
 
@@ -152,11 +152,11 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
         isModified = modified;
     }
 
-    public List<UUID> getViewers() {
+    public @Nullable List<UUID> getViewers() {
         return viewers;
     }
 
-    public void setViewers(List<UUID> viewers) {
+    public void setViewers(@Nullable List<UUID> viewers) {
         this.viewers = viewers;
         this.isModified = true;
     }
