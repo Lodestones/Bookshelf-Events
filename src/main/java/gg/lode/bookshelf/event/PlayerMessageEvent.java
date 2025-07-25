@@ -2,16 +2,18 @@ package gg.lode.bookshelf.event;
 
 import gg.lode.bookshelfapi.api.event.BaseEvent;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
-public class PlayerMessageEvent extends BaseEvent {
+public class PlayerMessageEvent extends BaseEvent implements Cancellable {
 
     private final Player player;
     private @Nullable UUID targetUniqueId;
     private @Nullable Player target;
     private @Nullable String targetName;
+    private boolean isCancellable;
 
 
     /**
@@ -90,5 +92,15 @@ public class PlayerMessageEvent extends BaseEvent {
      */
     public boolean isCrossNetwork() {
         return targetUniqueId != null;
+    }
+
+    @Override
+    public boolean isCancelled() {
+        return isCancellable;
+    }
+
+    @Override
+    public void setCancelled(boolean b) {
+        isCancellable = b;
     }
 }
