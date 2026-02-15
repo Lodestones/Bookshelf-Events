@@ -15,7 +15,6 @@ public class PlayerMessageEvent extends BaseEvent implements Cancellable {
     private @Nullable String targetName;
     private boolean isCancellable;
 
-
     /**
      * Constructs a PlayerMessageEvent for a local message sent on the same server.
      *
