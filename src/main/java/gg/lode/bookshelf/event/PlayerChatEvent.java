@@ -22,6 +22,8 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
     private String messageColor;
     private @Nullable List<UUID> viewers;
     private boolean isModified;
+    private ChatType chatType;
+    private @Nullable String channel;
 
     public PlayerChatEvent(Player player, Component prefix, Component suffix, Component message, String permission) {
         this.player = player;
@@ -33,6 +35,8 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
         this.playerColor = NamedTextColor.GRAY.asHexString();
         this.messageColor = NamedTextColor.GRAY.asHexString();
         this.viewers = null;
+        this.chatType = ChatType.PUBLIC;
+        this.channel = null;
     }
 
     public PlayerChatEvent(Player player, Component prefix, Component suffix, Component message) {
@@ -45,6 +49,8 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
         this.playerColor = NamedTextColor.GRAY.asHexString();
         this.messageColor = NamedTextColor.GRAY.asHexString();
         this.viewers = null;
+        this.chatType = ChatType.PUBLIC;
+        this.channel = null;
     }
 
     public PlayerChatEvent(Player player, Component prefix, Component message) {
@@ -57,6 +63,8 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
         this.messageColor = NamedTextColor.GRAY.asHexString();
         this.viewers = null;
         this.isModified = false;
+        this.chatType = ChatType.PUBLIC;
+        this.channel = null;
     }
 
     public PlayerChatEvent(Player player, Component message) {
@@ -69,6 +77,8 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
         this.messageColor = NamedTextColor.GRAY.asHexString();
         this.viewers = null;
         this.isModified = false;
+        this.chatType = ChatType.PUBLIC;
+        this.channel = null;
     }
 
     public void messageColor(String messageColor) {
@@ -158,6 +168,24 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
 
     public void setViewers(@Nullable List<UUID> viewers) {
         this.viewers = viewers;
+        this.isModified = true;
+    }
+
+    public ChatType getChatType() {
+        return chatType;
+    }
+
+    public void setChatType(ChatType chatType) {
+        this.chatType = chatType;
+        this.isModified = true;
+    }
+
+    public @Nullable String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(@Nullable String channel) {
+        this.channel = channel;
         this.isModified = true;
     }
 }

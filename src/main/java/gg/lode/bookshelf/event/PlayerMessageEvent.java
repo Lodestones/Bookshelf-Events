@@ -13,6 +13,7 @@ public class PlayerMessageEvent extends BaseEvent implements Cancellable {
     private @Nullable UUID targetUniqueId;
     private @Nullable Player target;
     private @Nullable String targetName;
+    private @Nullable String message;
     private boolean isCancellable;
 
     /**
@@ -27,6 +28,19 @@ public class PlayerMessageEvent extends BaseEvent implements Cancellable {
     }
 
     /**
+     * Constructs a PlayerMessageEvent for a local message sent on the same server with message content.
+     *
+     * @param player  The player who sent the message.
+     * @param target  The target player who received the message, or null if not applicable.
+     * @param message The message content, or null if not supplied.
+     */
+    public PlayerMessageEvent(Player player, @Nullable Player target, @Nullable String message) {
+        this.player = player;
+        this.target = target;
+        this.message = message;
+    }
+
+    /**
      * Constructs a PlayerMessageEvent for a message sent cross-network to a different server.
      *
      * @param player         The player who sent the message.
@@ -37,6 +51,21 @@ public class PlayerMessageEvent extends BaseEvent implements Cancellable {
         this.player = player;
         this.targetUniqueId = targetUniqueId;
         this.targetName = targetName;
+    }
+
+    /**
+     * Constructs a PlayerMessageEvent for a message sent cross-network to a different server with message content.
+     *
+     * @param player         The player who sent the message.
+     * @param targetUniqueId The UUID of the target player, or null if not applicable.
+     * @param targetName     The name of the target player, or null if not available.
+     * @param message        The message content, or null if not supplied.
+     */
+    public PlayerMessageEvent(Player player, @Nullable UUID targetUniqueId, @Nullable String targetName, @Nullable String message) {
+        this.player = player;
+        this.targetUniqueId = targetUniqueId;
+        this.targetName = targetName;
+        this.message = message;
     }
 
     /**
@@ -73,6 +102,24 @@ public class PlayerMessageEvent extends BaseEvent implements Cancellable {
      */
     public @Nullable UUID getTargetUniqueId() {
         return targetUniqueId;
+    }
+
+    /**
+     * Gets the message content, if supplied.
+     *
+     * @return The message content, or null if not available.
+     */
+    public @Nullable String getMessage() {
+        return message;
+    }
+
+    /**
+     * Sets the message content.
+     *
+     * @param message The message content.
+     */
+    public void setMessage(@Nullable String message) {
+        this.message = message;
     }
 
     /**
