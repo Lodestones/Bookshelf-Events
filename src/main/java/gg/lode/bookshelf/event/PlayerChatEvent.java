@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,15 +22,17 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
     private String playerColor;
     private String messageColor;
     private @Nullable List<UUID> viewers;
-    private boolean isModified;
+    private boolean luckPermsOverridden;
     private ChatType chatType;
     private @Nullable String channel;
+    private final List<Component> leadingPrefixes = new ArrayList<>();
+    private final List<Component> trailingSuffixes = new ArrayList<>();
 
     public PlayerChatEvent(Player player, Component prefix, Component suffix, Component message, String permission) {
         this.player = player;
         this.prefix = prefix;
         this.suffix = suffix;
-        this.isModified = false;
+        this.luckPermsOverridden = false;
         this.message = message;
         this.permission = permission;
         this.playerColor = NamedTextColor.GRAY.asHexString();
@@ -45,7 +48,7 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
         this.suffix = suffix;
         this.message = message;
         this.permission = null;
-        this.isModified = false;
+        this.luckPermsOverridden = false;
         this.playerColor = NamedTextColor.GRAY.asHexString();
         this.messageColor = NamedTextColor.GRAY.asHexString();
         this.viewers = null;
@@ -62,7 +65,7 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
         this.playerColor = NamedTextColor.GRAY.asHexString();
         this.messageColor = NamedTextColor.GRAY.asHexString();
         this.viewers = null;
-        this.isModified = false;
+        this.luckPermsOverridden = false;
         this.chatType = ChatType.PUBLIC;
         this.channel = null;
     }
@@ -76,14 +79,14 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
         this.playerColor = NamedTextColor.GRAY.asHexString();
         this.messageColor = NamedTextColor.GRAY.asHexString();
         this.viewers = null;
-        this.isModified = false;
+        this.luckPermsOverridden = false;
         this.chatType = ChatType.PUBLIC;
         this.channel = null;
     }
 
     public void messageColor(String messageColor) {
         this.messageColor = messageColor;
-        this.isModified = true;
+        this.luckPermsOverridden = true;
     }
 
     public String messageColor() {
@@ -92,7 +95,7 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
 
     public void playerColor(String playerColor) {
         this.playerColor = playerColor;
-        this.isModified = true;
+        this.luckPermsOverridden = true;
     }
 
     public String playerColor() {
@@ -105,7 +108,7 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
 
     public void setPermission(String permission) {
         this.permission = permission;
-        this.isModified = true;
+        this.luckPermsOverridden = true;
     }
 
     public Player getPlayer() {
@@ -126,17 +129,17 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
 
     public void prefix(Component component) {
         this.prefix = component;
-        this.isModified = true;
+        this.luckPermsOverridden = true;
     }
 
     public void suffix(Component component) {
         this.suffix = component;
-        this.isModified = true;
+        this.luckPermsOverridden = true;
     }
 
     public void message(Component component) {
         this.message = component;
-        this.isModified = true;
+        this.luckPermsOverridden = true;
     }
 
     @Override
@@ -150,16 +153,33 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
     }
 
     /**
-     * Has this event been touched by other plugins?
+     * Has another plugin overridden the chat formatting, so LuckPerms
+     * prefix/suffix/colors should not be applied?
      *
-     * @return true if touched by other plugins.
+     * @return true if the formatting was overridden by another plugin.
      */
-    public boolean isModified() {
-        return isModified;
+    public boolean isLuckPermsOverridden() {
+        return luckPermsOverridden;
     }
 
+    public void setLuckPermsOverridden(boolean overridden) {
+        luckPermsOverridden = overridden;
+    }
+
+    /**
+     * @deprecated renamed to {@link #isLuckPermsOverridden()}. Will be removed in a future release.
+     */
+    @Deprecated(forRemoval = true)
+    public boolean isModified() {
+        return isLuckPermsOverridden();
+    }
+
+    /**
+     * @deprecated renamed to {@link #setLuckPermsOverridden(boolean)}. Will be removed in a future release.
+     */
+    @Deprecated(forRemoval = true)
     public void setModified(boolean modified) {
-        isModified = modified;
+        setLuckPermsOverridden(modified);
     }
 
     public @Nullable List<UUID> getViewers() {
@@ -168,7 +188,7 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
 
     public void setViewers(@Nullable List<UUID> viewers) {
         this.viewers = viewers;
-        this.isModified = true;
+        this.luckPermsOverridden = true;
     }
 
     public ChatType getChatType() {
@@ -177,7 +197,7 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
 
     public void setChatType(ChatType chatType) {
         this.chatType = chatType;
-        this.isModified = true;
+        this.luckPermsOverridden = true;
     }
 
     public @Nullable String getChannel() {
@@ -186,6 +206,40 @@ public class PlayerChatEvent extends BaseEvent implements Cancellable {
 
     public void setChannel(@Nullable String channel) {
         this.channel = channel;
-        this.isModified = true;
+        this.luckPermsOverridden = true;
+    }
+
+    /**
+     * Adds a component that will be rendered <b>before</b> the LuckPerms prefix
+     * (left of the prefix). Multiple additions render in the order they were added.
+     * <p>
+     * Unlike {@link #prefix(Component)}, this does not flag the event as
+     * LuckPerms-overridden, so Bookshelf still applies the LuckPerms prefix.
+     *
+     * @param component the leading component to render before the prefix.
+     */
+    public void addLeadingPrefix(Component component) {
+        this.leadingPrefixes.add(component);
+    }
+
+    public List<Component> getLeadingPrefixes() {
+        return leadingPrefixes;
+    }
+
+    /**
+     * Adds a component that will be rendered <b>after</b> the LuckPerms suffix
+     * (right of the suffix). Multiple additions render in the order they were added.
+     * <p>
+     * Unlike {@link #suffix(Component)}, this does not flag the event as
+     * LuckPerms-overridden, so Bookshelf still applies the LuckPerms suffix.
+     *
+     * @param component the trailing component to render after the suffix.
+     */
+    public void addTrailingSuffix(Component component) {
+        this.trailingSuffixes.add(component);
+    }
+
+    public List<Component> getTrailingSuffixes() {
+        return trailingSuffixes;
     }
 }
